@@ -100,10 +100,14 @@ func main() {
 		}
 	}
 
-	path := findPlugin(args[0])
+	path := lookupPlugin(args[0])
 	if path == "" {
-		fmt.Fprintf(os.Stderr, "Unknown command/plugin: %s\n", args[0])
-		usage()
+		path = lookupPlugin("default")
+		if path == "" {
+			fmt.Fprintf(os.Stderr, "Unknown command/plugin: %s\n", args[0])
+			usage()
+		}
+		args = append([]string{"default"}, args...)
 	}
 	err := execPlugin(path, args)
 	log.Fatal("exec error: ", err)
